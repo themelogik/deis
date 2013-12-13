@@ -12,6 +12,8 @@ import uuid
 from django.test import TestCase
 from django.test.utils import override_settings
 
+from api.models import Release
+
 
 @override_settings(CELERY_ALWAYS_EAGER=True)
 class ReleaseTest(TestCase):
@@ -123,3 +125,10 @@ class ReleaseTest(TestCase):
         self.assertEqual(self.client.put(url).status_code, 405)
         self.assertEqual(self.client.patch(url).status_code, 405)
         self.assertEqual(self.client.delete(url).status_code, 405)
+        return release3
+
+    def test_release_str(self):
+        """Test the text representation of a node."""
+        release3 = self.test_release()
+        release = Release.objects.get(uuid=release3['uuid'])
+        self.assertEqual(str(release), "{}-v3".format(release3['app']))
